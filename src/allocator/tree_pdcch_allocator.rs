@@ -8,6 +8,8 @@ use crate::types::rnti::Rnti;
 use serde::{Deserialize, Serialize};
 use std::array;
 
+use structures;
+
 pub type PdcchSched = PdcchSchedTree;
 
 /// State for dci allocation
