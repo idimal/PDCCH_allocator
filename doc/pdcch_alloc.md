@@ -15,7 +15,7 @@ DCI передаются в канале PDCCH. DCI может занимать 
 
 Search spaces для двух UE:
 
-![](prcch/cssp.png)
+![](pdcch/cssp.png)
 
 Здесь по горизонтали для каждой UE пронумерованы CCE с разметкой по Aggregation level. Номер Aggregation Level указывает, сколько CCE нужно для кодирования одного DCI.
 С учётом этих данных, PDCCH allocator выделяет место для DCI в канале PDCCH так, чтобы получилось разместить наибольшее их количество. 
