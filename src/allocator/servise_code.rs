@@ -1,0 +1,5 @@
+/*
+Here is a minimum set of defines and structures
+for the allocator to work
+separately from the MAC scheduler
+*/
