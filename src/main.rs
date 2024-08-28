@@ -64,7 +64,7 @@ fn test(prb_count: u8) {
 
     let count_table = resource_allocation::calculate_cce_count_table(&cell_config);
     let mut s = PdcchSched::new(count_table);
-
+    // Randomly generated values
     let data = [
         (PdcchAggregation::L1, Rnti(10249)),
         (PdcchAggregation::L1, Rnti(7386)),
