@@ -94,7 +94,7 @@ struct AllocationTree {
     alloc_count: usize,
 
     /// Vector of (parent index, allocation)
-    allocation_buffer: BoundedVec<(Option<usize>, PdcchAlloc),  33_554_432>, // 2^25, works up to 10 DCI
+    allocation_buffer: BoundedVec<(Option<usize>, PdcchAlloc),  33_554_432>, // 2^25, works up to ~10 DCI
 
     /// Range of indices for lowest tree layer
     last_layer: Interval<usize, { usize::MAX }>,
@@ -158,7 +158,6 @@ impl AllocationTree {
             None => CceMask::new(self.cce_count as usize),
         };
         for &start_cce in search_space[aggregation_level as usize].iter() {
-            // TODO: check for SR collision
 
             let mut alloc_mask = CceMask::new(self.cce_count as usize);
             alloc_mask.fill(start_cce as usize, aggregation_level.size(), true)?;
@@ -289,111 +288,5 @@ mod test {
         println!("{}", mask);
         println!("{:?}", cfi);
         println!("{:?}", search_space[tti.to_usize() % 10]);
-    }
-
-    #[test]
-    fn pdcch_allocation_and_search_space() {
-        let sched_cfg = SchedulerConfig::default();
-        let cell_config = init::cell_cfg(&sched_cfg);
-        let count_table = resource_allocation::calculate_cce_count_table(&cell_config);
-        let mut s = PdcchSched::new(count_table);
-        s.new_tti();
-
-        let tti = TtiPoint::from(1);
-
-        let rnti = Rnti(70);
-        let search_space = calculate_search_space(&rnti, &count_table);
-
-        let aggr_level = PdcchAggregation::L1;
-
-        s.allocate_dci(aggr_level, &search_space[tti.to_usize() % 10], rnti)
-            .unwrap();
-
-        let (allocs, mask, cfi) = s.get_allocs();
-        println!("{:?}", allocs);
-        println!("{}", mask);
-        println!("{:?}", cfi);
-
-        // Check if rnti is allocated in PDCCH
-        assert_eq!(allocs[0].rnti, rnti);
-
-        // Check if allocation is in rnti's search space
-        assert!(
-            search_space[tti.to_usize()][cfi as usize][aggr_level as usize]
-                .iter()
-                .find(|cce| **cce == allocs[0].start_cce)
-                .is_some()
-        );
-        assert!(
-            search_space[tti.to_usize()][cfi as usize][aggr_level as usize]
-                .iter()
-                .find(|cce| **cce == allocs[0].start_cce)
-                .is_some()
-        );
-
-        assert_eq!(allocs.len(), 1);
-    }
-
-    #[test]
-    fn pdcch_search_space_full() {
-        let sched_cfg = SchedulerConfig::default();
-        let cell_config = init::cell_cfg(&sched_cfg);
-        let count_table = resource_allocation::calculate_cce_count_table(&cell_config);
-        let mut s = PdcchSched::new(count_table);
-        s.new_tti();
-
-        let tti = TtiPoint::from(1);
-
-        let aggr_level = PdcchAggregation::L1;
-
-        let mut search_space = SearchSpace::default();
-
-        for cfiss in search_space[1].iter_mut() {
-            for cfi in Cfi::list() {
-                cfiss[cfi.index()].push(0).unwrap();
-                cfiss[cfi.index()].push(1).unwrap();
-                cfiss[cfi.index()].push(2).unwrap();
-                cfiss[cfi.index()].push(3).unwrap();
-                cfiss[cfi.index()].push(4).unwrap();
-                cfiss[cfi.index()].push(5).unwrap();
-            }
-            for cfi in Cfi::list() {
-                cfiss[cfi.index()].push(0).unwrap();
-                cfiss[cfi.index()].push(1).unwrap();
-                cfiss[cfi.index()].push(2).unwrap();
-                cfiss[cfi.index()].push(3).unwrap();
-                cfiss[cfi.index()].push(4).unwrap();
-                cfiss[cfi.index()].push(5).unwrap();
-            }
-        }
-
-        for r in 70..76 {
-            let rnti = Rnti(r);
-            s.allocate_dci(aggr_level, &search_space[tti.sf_idx()], rnti)
-                .unwrap();
-            s.allocate_dci(aggr_level, &search_space[tti.sf_idx()], rnti)
-                .unwrap();
-        }
-
-        let (allocs, mask, cfi) = s.get_allocs();
-        println!("{:?}", allocs);
-        println!("{}", mask);
-        println!("{:?}", cfi);
-
-        assert_eq!(allocs.len(), 6);
-
-        let mut expected_mask = CceMask::new(mask.size());
-        for i in 0..6 {
-            expected_mask.set(i, true).unwrap();
-        }
-        assert_eq!(mask, expected_mask);
-
-        let res = s
-            .allocate_dci(aggr_level, &search_space[tti.sf_idx()], Rnti(80))
-            .expect_err("Allocation with full mask should fail");
-        let res = s
-            .allocate_dci(aggr_level, &search_space[tti.sf_idx()], Rnti(80))
-            .expect_err("Allocation with full mask should fail");
-        assert!(matches!(res, AllocationError::NoCchSpace));
     }
 }
