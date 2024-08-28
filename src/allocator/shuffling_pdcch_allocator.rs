@@ -7,9 +7,7 @@ use crate::types::rnti::Rnti;
 use rand::Rng;
 use std::array;
 
-use super::sched_pdcch::{
-    CceCountTable, CfiSearchSpace, PdcchAggregation, SfSearchSpace, MAX_PDCCH,
-};
+use structures;
 
 #[derive(Clone, Debug)]
 pub struct PdcchSchedShuffling {
