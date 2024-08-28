@@ -15,7 +15,7 @@ DCI передаются в канале PDCCH. DCI может занимать 
 
 Search spaces для двух UE:
 
-![](../res/cssp.png)
+![](prcch/cssp.png)
 
 Здесь по горизонтали для каждой UE пронумерованы CCE с разметкой по Aggregation level. Номер Aggregation Level указывает, сколько CCE нужно для кодирования одного DCI.
 С учётом этих данных, PDCCH allocator выделяет место для DCI в канале PDCCH так, чтобы получилось разместить наибольшее их количество. 
@@ -51,30 +51,30 @@ Shuffling allocator пытается разместить DCI начиная с 
 ## Алгоритмы и их назначение
 Аллокация DCI
 
-![](../res/pdcch/pdcch_fn_try_alloc_scheme.png)
+![](pdcch/pdcch_fn_try_alloc_scheme.png)
 
-![](../res/pdcch/pdcch_fn_shuffle_scheme.png)
+![](pdcch/pdcch_fn_shuffle_scheme.png)
 
 ### Приложение 1
 
-![](../res/pdcch/pdcch_plot_allocate_dci_6prb.png)
+![](pdcch/pdcch_plot_allocate_dci_6prb.png)
 
-![](../res/pdcch/pdcch_plot_allocate_dci_25prb.png)
+![](pdcch/pdcch_plot_allocate_dci_25prb.png)
 
-![](../res/pdcch/pdcch_plot_allocate_dci_100prb.png)
+![](pdcch/pdcch_plot_allocate_dci_100prb.png)
 
-![](../res/pdcch/pdcch_plot_free_cce_6prb.png)
+![](pdcch/pdcch_plot_free_cce_6prb.png)
 
-![](../res/pdcch/pdcch_plot_free_cce_25prb.png)
+![](pdcch/pdcch_plot_free_cce_25prb.png)
 
-![](../res/pdcch/pdcch_plot_free_cce_100prb.png)
+![](pdcch/pdcch_plot_free_cce_100prb.png)
 
-![](../res/pdcch/pdcch_plot_time_6prb.png)
+![](pdcch/pdcch_plot_time_6prb.png)
 
-![](../res/pdcch/pdcch_plot_time_25prb.png)
+![](pdcch/pdcch_plot_time_25prb.png)
 
-![](../res/pdcch/pdcch_plot_time_25prb_tree.png)
+![](pdcch/pdcch_plot_time_25prb_tree.png)
 
-![](../res/pdcch/pdcch_plot_time_100prb.png)
+![](pdcch/pdcch_plot_time_100prb.png)
 
-![](../res/pdcch/pdcch_plot_time_100prb_tree.png)
+![](pdcch/pdcch_plot_time_100prb_tree.png)
